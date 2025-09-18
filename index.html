@@ -1,10 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-redirect="https://6us.org/?27qX8fFg3NxUDhCju3K2HCDm2h8FXsZiAbTI5VXJkyqV3oXEqhbpW">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Loading…</title>
   <meta name="description" content="Single responsive loading button — mobile, tablet, and desktop." />
+  <!-- Fallback meta refresh (in case JS is disabled). Replace the URL as needed. -->
+  <meta http-equiv="refresh" content="4;url=https://www.example.com/">
   <style>
     :root {
       --bg: #0b1220;      /* dark background */
@@ -59,7 +61,27 @@
 <body>
   <button class="loading" disabled aria-busy="true" aria-live="polite">
     <span class="spinner" aria-hidden="true"></span>
-    Loading…
+    <span id="label">Loading…</span>
   </button>
+
+  <script>
+    // Destination priority: ?to=<url> query param, then data-redirect on <html>, else "/"
+    const qp = new URLSearchParams(location.search);
+    const dest = qp.get('to') || document.documentElement.getAttribute('data-redirect') || '/';
+
+    // Optional countdown on the button label (keeps a single loading button on screen)
+    let secs = 4;
+    const labelEl = document.getElementById('label');
+    const tick = setInterval(() => {
+      secs--;
+      if (secs > 0) labelEl.textContent = `Loading… ${secs}s`;
+    }, 1000);
+
+    setTimeout(() => {
+      clearInterval(tick);
+      // Use replace() to avoid keeping the loading page in history (optional)
+      location.replace(dest);
+    }, 4000);
+  </script>
 </body>
 </html>
